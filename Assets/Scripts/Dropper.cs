@@ -20,7 +20,7 @@ public class Dropper : MonoBehaviour, IDropHandler
             }
             else
             {
-                Transform p = d.getOriginalParent();
+                Transform p = d.GetOriginalParent();
                 Transform c = transform.GetChild(0);
                 c.SetParent(p);
                 c.localPosition = Vector3.zero;

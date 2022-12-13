@@ -12,27 +12,27 @@ public class Dragger : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragH
         InstanceDrag = 1
     }
 
-    private Image _image;
-    private Transform _originalParent;
-    public Canvas _canvas;
+    private Image _image;// 物品(圖)
+    private Transform _originalParent;// 物品移動前的父物件
+    public Canvas _canvas;// UI最外層
     private bool _beInstanced;
     private RectTransform _canvasRect;
-    private Vector3 _offsetCenter;
+    private Vector3 _offsetCenter;// 拖曳時滑鼠對物品中心位置
 
-    public DraggerMode DragMode = DraggerMode.CommonDrag;
+    public DraggerMode DragMode = DraggerMode.CommonDrag;// 設定DraggerMode為DraggerMode.CommonDrag
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (DragMode == DraggerMode.CommonDrag)
         {
-            Debug.Log("OnBeginDrag " + eventData.pointerDrag.name + ":" + gameObject.name);
-            _originalParent = _image.transform.parent;
-            _image.transform.SetParent(_canvas.transform);
-            _image.raycastTarget = false;
-            if (_canvas.renderMode == RenderMode.ScreenSpaceCamera)
+            Debug.Log("OnBeginDrag " + eventData.pointerDrag.name + ":" + gameObject.name);// 確認eventData與gameObject個是甚麼
+            _originalParent = _image.transform.parent;// 將_image的父物件存入_originalParent
+            _image.transform.SetParent(_canvas.transform);// _image移到_canvas下成為子物件
+            _image.raycastTarget = false;// _image裡的Raycast Target關閉
+            if (_canvas.renderMode == RenderMode.ScreenSpaceCamera)// 如果_canvas裡的Render Mode是ScreenSpaceCamera
             {
-                Vector2 opos = Vector2.zero;
+                Vector2 opos = Vector2.zero;// opos位置到(0,0)
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, Input.mousePosition, Camera.main, out opos);
-                Vector2 tpos = _image.transform.localPosition;
+                Vector2 tpos = _image.transform.localPosition;// tpos放入_image在父物件裡的位置
                 _offsetCenter = opos - tpos;
             }
             else if (_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
@@ -45,7 +45,7 @@ public class Dragger : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragH
             GameObject newImage = Instantiate(_image.gameObject);
 
             Dragger d = newImage.GetComponent<Dragger>();
-            d.setup(_canvas, true);
+            d.Setup(_canvas, true);
             newImage.transform.SetParent(_canvas.transform);
             newImage.transform.localRotation = Quaternion.identity;
             newImage.transform.localScale = Vector3.one;
@@ -93,12 +93,12 @@ public class Dragger : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragH
         _image.raycastTarget = true;
     }
 
-    public Transform getOriginalParent()
+    public Transform GetOriginalParent()
     {
         return _originalParent;
     }
 
-    public void setup(Canvas cs, bool bInstance)
+    public void Setup(Canvas cs, bool bInstance)
     {
         _canvas = cs;
         _image = GetComponent<Image>();
